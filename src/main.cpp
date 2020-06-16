@@ -23,6 +23,7 @@
 #define MAX_SIZE_BLOCK  16
 #define greenPin     2
 #define redPin       4
+#define relayPin     15
 
 //used in authentication
 MFRC522::MIFARE_Key key;
@@ -191,6 +192,7 @@ void setup()
 
   pinMode(greenPin, OUTPUT);
   pinMode(redPin, OUTPUT);
+  pinMode(relayPin, OUTPUT);
 
   while(!connect_wifi()){
     Serial.println("Couldn't connect to Wifi, sleeping for 5 seconds");
@@ -250,8 +252,10 @@ void loop() {
     if (response.status_code == 200){
       Serial.println("Authorised");
       digitalWrite(greenPin, HIGH);
+      digitalWrite(relayPin, HIGH);
       delay(5000);
       digitalWrite(greenPin, LOW);
+      digitalWrite(relayPin, LOW);
     } else {
       Serial.println("Unuthorised");
       digitalWrite(redPin, HIGH);

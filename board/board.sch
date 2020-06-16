@@ -1,0 +1,123 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Connector:Conn_01x08_Female J1
+U 1 1 5EE8F26F
+P 4900 3650
+F 0 "J1" H 4928 3626 50  0000 L CNN
+F 1 "RFID-RC522" H 4928 3535 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical" H 4900 3650 50  0001 C CNN
+F 3 "~" H 4900 3650 50  0001 C CNN
+	1    4900 3650
+	-1   0    0    1   
+$EndComp
+$Comp
+L ESP32-DEVKITC-32D:ESP32-DEVKITC-32D U1
+U 1 1 5EE9977B
+P 6800 4150
+F 0 "U1" H 6800 5317 50  0000 C CNN
+F 1 "ESP32-DEVKITC-32D" H 6800 5226 50  0000 C CNN
+F 2 "MODULE_ESP32-DEVKITC-32D" H 6800 4150 50  0001 L BNN
+F 3 "4" H 6800 4150 50  0001 L BNN
+F 4 "Espressif Systems" H 6800 4150 50  0001 L BNN "Field4"
+	1    6800 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 3250 6000 3250
+Wire Wire Line
+	5100 3350 5750 3350
+Wire Wire Line
+	5750 3350 5750 4950
+Wire Wire Line
+	5750 4950 6000 4950
+Wire Wire Line
+	5100 3450 5850 3450
+Wire Wire Line
+	5850 3450 5850 3350
+Wire Wire Line
+	5850 3350 6000 3350
+Wire Wire Line
+	5100 3750 5700 3750
+Wire Wire Line
+	5700 3750 5700 5050
+Wire Wire Line
+	5700 5050 6000 5050
+Wire Wire Line
+	5100 3950 5800 3950
+Wire Wire Line
+	5800 3950 5800 4650
+Wire Wire Line
+	5800 4650 6000 4650
+Wire Wire Line
+	5100 3650 5850 3650
+Wire Wire Line
+	5850 3650 5850 4550
+Wire Wire Line
+	5850 4550 6000 4550
+Wire Wire Line
+	5100 3850 5900 3850
+Wire Wire Line
+	5900 3850 5900 4450
+Wire Wire Line
+	5900 4450 6000 4450
+$Comp
+L Device:LED_ARBG D1
+U 1 1 5EEA7B0B
+P 5000 4450
+F 0 "D1" H 5000 3983 50  0000 C CNN
+F 1 "LED_ARBG" H 5000 4074 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 5000 4400 50  0001 C CNN
+F 3 "~" H 5000 4400 50  0001 C CNN
+	1    5000 4450
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4800 4450 4150 4450
+Wire Wire Line
+	4150 4450 4150 2950
+Wire Wire Line
+	4150 2950 5850 2950
+Wire Wire Line
+	5850 2950 5850 3350
+Connection ~ 5850 3350
+Wire Wire Line
+	5350 3500 5900 3500
+Wire Wire Line
+	5900 3500 5900 3450
+Wire Wire Line
+	5900 3450 6000 3450
+Wire Wire Line
+	5400 3550 6000 3550
+Wire Wire Line
+	5200 4650 5450 4650
+Wire Wire Line
+	5450 4650 5450 3600
+Wire Wire Line
+	5450 3600 5900 3600
+Wire Wire Line
+	5900 3600 5900 3650
+Wire Wire Line
+	5900 3650 6000 3650
+Wire Wire Line
+	5400 4250 5400 3550
+Wire Wire Line
+	5200 4250 5400 4250
+Wire Wire Line
+	5350 3500 5350 4450
+Wire Wire Line
+	5350 4450 5200 4450
+$EndSCHEMATC
