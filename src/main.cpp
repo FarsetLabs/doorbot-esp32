@@ -37,7 +37,7 @@ char addr_str[21];  // Stores the scanned ID as a str-able
 
 const int WIFI_CONNECT_TIMEOUT_SECONDS = 10;
 
-WiFiClient wifi_client;
+WiFiClientSecure wifi_client;
 PubSubClient mqtt_client(wifi_client);
 HTTPClient http;
 
@@ -45,6 +45,7 @@ String device_id;
 String client_id;
 String pub_topic;
 String sub_topic;
+String space_name = SPACE_NAME;
 
 struct HTTPResponse {
    int status_code;
@@ -175,7 +176,7 @@ boolean readCardId()
   }
   else{
     digitalWrite(greenPin, HIGH);
-    delay(1000);
+    delay(100);
     digitalWrite(greenPin, LOW);
   }
 
@@ -194,35 +195,50 @@ void setup()
   pinMode(redPin, OUTPUT);
   pinMode(relayPin, OUTPUT);
 
+  digitalWrite(greenPin, LOW);
+  digitalWrite(redPin, HIGH);
+  digitalWrite(relayPin, LOW);
+
   while(!connect_wifi()){
     Serial.println("Couldn't connect to Wifi, sleeping for 5 seconds");
     ESP.deepSleep(5*1e6);
   }
   Serial.print("Connected; Device ID: ");
   Serial.println(get_device_id());
-  
+
   // Init MFRC522
   mfrc522.PCD_Init(); 
+  digitalWrite(greenPin, LOW);
+  digitalWrite(redPin, LOW);
+  digitalWrite(relayPin, LOW);
   Serial.println("Approach your reader card...");
   Serial.println();
+
+  wifi_client.setInsecure();
 }
 
 HTTPResponse make_request(){
   HTTPResponse response;
-
-  http.begin(wifi_client, "http://door.bolster.online/open/"+get_device_id());
-  http.setAuthorization(get_device_id().c_str(), addr_str);
-  response.status_code = http.GET();
-  
+  // Lets play nexudus!
+  //
+  http.begin(wifi_client, "https://"+space_name+".spaces.nexudus.com/api/public/checkin"); 
+  http.addHeader("Content-Type", "application/json");
+  response.status_code = http.POST(
+    "{\"AccessCardID\":\""+String(addr_str)+"\"}"
+  );
+  Serial.println(addr_str);
 
   if (response.status_code>0) {
+    
     Serial.print("HTTP Response code: ");
     Serial.println(response.status_code);
     response.response = http.getString();
+    Serial.println(response.response);
   }
   else {
     Serial.print("Error code: ");
     Serial.println(response.status_code);
+    Serial.println(http.getString());
   }
   // Free resources
   http.end();
@@ -236,6 +252,10 @@ void loop() {
    //waiting the card approach
   if ( ! mfrc522.PICC_IsNewCardPresent()) 
   {
+    delay(400);
+    digitalWrite(greenPin, HIGH);
+    delay(100);
+    digitalWrite(greenPin, LOW);
     return;
   }
   // Select a card
@@ -249,8 +269,12 @@ void loop() {
   
   if (readCardId()) {
     HTTPResponse response = make_request();
-    if (response.status_code == 200){
-      Serial.println("Authorised");
+    // Nexudus helpfully doesn't use HTTP status as actual status, so we hae to break the previous doorbot 'cleverness' (thank goodness)
+    DynamicJsonDocument doc(1024);
+    deserializeJson(doc, response.response);
+    if (doc["Status"].as<int>()==200){
+      Serial.print("Authorised:");
+      Serial.println(doc["Value"]["FullName"].as<String>());
       digitalWrite(greenPin, HIGH);
       digitalWrite(relayPin, HIGH);
       delay(5000);
@@ -258,9 +282,12 @@ void loop() {
       digitalWrite(relayPin, LOW);
     } else {
       Serial.println("Unuthorised");
-      digitalWrite(redPin, HIGH);
-      delay(5000);
-      digitalWrite(redPin, LOW);
+      for (int i = 0; i < 5; i++){
+        digitalWrite(redPin, HIGH);
+        delay(100);
+        digitalWrite(redPin, LOW);
+        delay(100);
+      }
     }
   }
  
