@@ -4,6 +4,7 @@
 #include <MFRC522.h> //library responsible for communicating with the module RFID-RC522
 #include <SPI.h> //library responsible for communicating of SPI bus
 
+
 #ifdef ESP8266
   #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
   #define CHIP_ID   ((uint32_t)ESP.getChipId())
@@ -189,7 +190,8 @@ boolean readCardId()
 void setup() 
 {
   Serial.begin(115200);
-  SPI.begin(); // Init SPI bus
+  SPI.begin(18, 19, 23, 21); //SCK, MISO, MOSI, SS // Init SPI bus
+  //Heltec.begin(true /*DisplayEnable Enable*/, false /*LoRa Enable*/, true /*Serial Enable*/);
 
   pinMode(greenPin, OUTPUT);
   pinMode(redPin, OUTPUT);
@@ -197,7 +199,7 @@ void setup()
 
   digitalWrite(greenPin, LOW);
   digitalWrite(redPin, HIGH);
-  digitalWrite(relayPin, LOW);
+  digitalWrite(relayPin, HIGH);
 
   while(!connect_wifi()){
     Serial.println("Couldn't connect to Wifi, sleeping for 5 seconds");
